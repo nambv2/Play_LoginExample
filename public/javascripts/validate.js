@@ -29,7 +29,20 @@ $(document).ready(function(){
 			});
 		}
 	});
-	$('.birthDay').datepicker({
+	
+	$(".birthDay").datepicker({
 			format: "dd/mm/yyyy"
+	});
+	
+	$("#signup").on("submit",function(){
+		var account = $("#account").val();
+		var address = $("#address").val();
+		var birthday = $("#birthday").val();
+		var sex = $("#sex").val();
+		$.ajax({
+			type:"POST",
+			url:"signup",
+			data:{"account","address"}
+		});
 	});
 });
