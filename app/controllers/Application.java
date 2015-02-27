@@ -11,20 +11,37 @@ import views.html.*;
 
 public class Application extends Controller {
 
+    //View login page
     public static Result index() {
         return ok(index.render());
     }
+    
+    //view information of employee page
     public static Result infor() {
-      return ok(login.render());
+      String account = session("account");
+      System.out.println("Account is: "+account+"--"+LoginModels.GetInfo(account).toString());
+      return ok(login.render(account,LoginModels.GetInfo(account)));
     }
+    
+    //logout account
+    public static Result logout(){
+      session().remove("account");
+      return redirect(routes.Application.index());
+    }
+    
+    public static Result edit(){
+      String account = session("account");
+      return ok(edit.render(account,LoginModels.edit(account),LoginModels.getSubject()));
+    }
+    
     public static Result login() {
       DynamicForm form = Form.form().bindFromRequest();
-      String userName = form.get("userName");
+      String account = form.get("account");
       String passWord = form.get("passWord");
-      System.out.println("infor is: "+userName+" "+passWord);
-      Boolean checkFlag = LoginModels.CheckLogin(userName, passWord);
+      Boolean checkFlag = LoginModels.CheckLogin(account, passWord);
       System.out.println("checkFlag: "+checkFlag);
       if(checkFlag == true){
+        session("account", account);
         return redirect(routes.Application.infor());
       } else {
         return redirect(routes.Application.index());
@@ -37,13 +54,27 @@ public class Application extends Controller {
     
     public static Result signupDone(){
       DynamicForm dynamicForm = Form.form().bindFromRequest();
+      String passWord = dynamicForm.get("passWord");
       String account = dynamicForm.get("account");
       String address = dynamicForm.get("address");
-      String sexOption = dynamicForm.get("sexOption");
-      String birthDay = dynamicForm.get("birthDay");
+      String sex = dynamicForm.get("sex");
+      String birthday = dynamicForm.get("birthday");
       String subject = dynamicForm.get("subject");
-      System.out.println("value is: "+account+" "+address+" "+sexOption+" "+birthDay+" "+subject);
-      LoginModels.Signup(account, address, birthDay, sexOption, subject);
+      System.out.println("value is: "+account+" "+address+" "+sex+" "+birthday+" "+subject);
+      LoginModels.Signup(account, address, birthday, sex, subject,passWord);
       return redirect(routes.Application.index());
+    }
+    
+    public static Result editdone(){
+      System.out.println("I'm here");
+      String account = session("account");
+      DynamicForm form = Form.form().bindFromRequest();
+      String address = form.get("address");
+      String birthday = form.get("birthday");
+      String sex = form.get("sex");
+      String subject = form.get("subject");
+      System.out.println("new address: "+address);
+      LoginModels.saveNewInfor(account, address, birthday, sex, subject);
+      return redirect(routes.Application.infor());
     }
 }

@@ -21,7 +21,7 @@ $(document).ready(function(){
 		} 
 	});
 	
-	$("#birthDay").datepicker({
+	$("#birthday").datepicker({
 			format: "dd/mm/yyyy"
 	});
 

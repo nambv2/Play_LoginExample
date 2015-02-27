@@ -5,12 +5,15 @@ package models;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 /**
@@ -19,18 +22,21 @@ import com.mongodb.MongoClient;
  */
 public class LoginModels {
 
-  public static Boolean CheckLogin(String userName, String passWord) {
+  // check login
+  public static Boolean CheckLogin(String account, String passWord) {
     BasicDBObject query = new BasicDBObject();
-    String account = "";
-    query.put("account", userName);
+    DBObject info = null;
+    query.put("account", account);
     try {
       DBCursor dbCursor = ConfigDB.Database().find(query);
       while (dbCursor.hasNext()) {
-        account = dbCursor.next().get("account").toString();
-        System.out.println("Account is: "+account);
-        if (userName.equals(account)) {
-          return true;
-        }
+        info = dbCursor.next();
+      }
+      System.out.println("Account: " + info.get("account") + "and pass is:"
+          + info.get("password"));
+      if (account.equals(info.get("account"))
+          && (passWord.equals(info.get("password")))) {
+        return true;
       }
     } catch (UnknownHostException e) {
       e.printStackTrace();
@@ -38,6 +44,7 @@ public class LoginModels {
     return false;
   }
 
+  // Get item subject from database
   public static List<String> getSubject() {
     List<String> subject = new ArrayList<String>();
     try {
@@ -56,13 +63,15 @@ public class LoginModels {
 
   }
 
-  public static void Signup(String account, String address, String birthDay,
-      String sexOption, String subject) {
+  // Sign up a new account
+  public static void Signup(String account, String address, String birthday,
+      String sex, String subject, String passWord) {
     BasicDBObject basicDBObject = new BasicDBObject();
     basicDBObject.put("account", account);
+    basicDBObject.put("password", passWord);
     basicDBObject.put("address", address);
-    basicDBObject.put("birthday", birthDay);
-    basicDBObject.put("sex", sexOption);
+    basicDBObject.put("birthday", birthday);
+    basicDBObject.put("sex", sex);
     basicDBObject.put("subject", subject);
     try {
       ConfigDB.Database().insert(basicDBObject);
@@ -70,20 +79,72 @@ public class LoginModels {
       e.printStackTrace();
     }
   }
-  
-  public static List<String> GetInfo(String account){
-    List<String> info = new ArrayList<String>();
+
+  // Get information of employee
+  public static Map<String, String> GetInfo(String account) {
+    Map<String, String> info = new HashMap<String, String>();
+    String sexOption = "";
     BasicDBObject query = new BasicDBObject();
     query.put("account", account);
+    DBObject dbObject = null;
     try {
       DBCursor cursor = ConfigDB.Database().find(query);
-      while(cursor.hasNext()){
-        System.out.println(cursor.next());
+      while (cursor.hasNext()) {
+        dbObject = cursor.next();
       }
+      System.out.println("Address is: " + dbObject.get("address").toString());
+      info.put("address", dbObject.get("address").toString());
+      info.put("birthday", dbObject.get("birthday").toString());
+      if ("on".equals(dbObject.get("sex").toString())) {
+        sexOption = "Male";
+      } else {
+        sexOption = "Female";
+      }
+      info.put("sex", sexOption);
+      info.put("subject", dbObject.get("subject").toString());
     } catch (UnknownHostException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return info;
+  }
+
+  // Get current the information before edit
+  public static Map<String, String> edit(String account) {
+
+    Map<String, String> info = new HashMap<>();
+    BasicDBObject query = new BasicDBObject();
+    query.put("account", account);
+    DBObject object = null;
+    try {
+      DBCursor cursor = ConfigDB.Database().find(query);
+      while (cursor.hasNext()) {
+        object = cursor.next();
+      }
+      info.put("address", object.get("address").toString());
+      info.put("birthday", object.get("birthday").toString());
+      info.put("sex", object.get("sex").toString());
+      info.put("subject", object.get("subject").toString());
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
+    return info;
+  }
+
+  // Edit information
+  public static void saveNewInfor(String account, String address,
+      String birthday, String sex, String subject) {
+    System.out.println("I'm here2");
+    System.out.println("new address: " + address);
+    BasicDBObject object = new BasicDBObject();
+    object.append("$set", new BasicDBObject().append("address", address))
+        .append("birthday", birthday).append("sex", sex)
+        .append("subject", subject);
+    BasicDBObject query = new BasicDBObject().append("account", account);
+    try {
+      ConfigDB.Database().update(query, object);
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
   }
 }

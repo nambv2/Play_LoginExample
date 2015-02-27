@@ -8,5 +8,8 @@ GET		/signup					   	controllers.Application.loadSubject()
 POST	/signup					   	controllers.Application.signupDone()
 POST	/login					    controllers.Application.login()
 GET		/infor						controllers.Application.infor()
+GET		/logout						controllers.Application.logout()
+POST	/edit						controllers.Application.edit()
+POST	/editdone				    controllers.Application.editdone()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
