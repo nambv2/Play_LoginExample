@@ -1,0 +1,52 @@
+@(account:String,info:Map[Integer,Map[String,String]])
+@main("Admin page"){
+	<div class="container">
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">Information</a>
+				</div>
+				<div>
+					<ul class="nav navbar-nav navbar-right">
+        				<li><a href="logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+     				 </ul>
+				</div>
+			</div>
+		</nav>
+		<h2 class="text-center">The information of employees</h2>
+		<form role="form form-honizontal" method="post" action="edit">
+			<div class="form-group">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Account</th>
+							<th>Address</th>
+							<th>Age</th>
+							<th>Sex</th>
+							<th>Subject</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@for(key<-info.keySet()){
+							<tr>
+								<td>@info.get(key).get("account")</td>
+								<td>@info.get(key).get("address")</td>
+								<td>@info.get(key).get("birthday")</td>
+								<td>@info.get(key).get("sex")</td>
+								<td>@info.get(key).get("subject")</td>
+							</tr>
+						}						
+					</tbody>
+				</table>
+			</div>
+			<div class="col-sm-4"></div>
+			<div class="form-group col-sm-4">
+				<div class="col-sm-6">
+					<input class="form-control btn-primary" type="submit" value="Edit Information">
+				</div>
+			</div>
+			<div class="col-sm-4"></div>
+		</form>
+	</div>
+}

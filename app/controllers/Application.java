@@ -29,6 +29,11 @@ public class Application extends Controller {
       return redirect(routes.Application.index());
     }
     
+    public static Result admin(){
+      String account = session("account");
+      return ok(admin.render(account,LoginModels.GetAllInfo(account)));
+    }
+    
     public static Result edit(){
       String account = session("account");
       return ok(edit.render(account,LoginModels.edit(account),LoginModels.getSubject()));
@@ -40,7 +45,15 @@ public class Application extends Controller {
       String passWord = form.get("passWord");
       Boolean checkFlag = LoginModels.CheckLogin(account, passWord);
       System.out.println("checkFlag: "+checkFlag);
-      if(checkFlag == true){
+      if("admin".equals(account)){
+        if(checkFlag == true){
+          session("account", account);
+          return redirect(routes.Application.admin());
+        } else {
+          return redirect(routes.Application.index());
+        }
+      }
+      else if(checkFlag == true){
         session("account", account);
         return redirect(routes.Application.infor());
       } else {

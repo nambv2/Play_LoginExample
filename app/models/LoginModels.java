@@ -6,8 +6,12 @@ package models;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
+
+
+
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -15,6 +19,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+
 
 /**
  * @author NamBV2
@@ -136,15 +141,51 @@ public class LoginModels {
       String birthday, String sex, String subject) {
     System.out.println("I'm here2");
     System.out.println("new address: " + address);
-    BasicDBObject object = new BasicDBObject();
-    object.append("$set", new BasicDBObject().append("address", address))
-        .append("birthday", birthday).append("sex", sex)
-        .append("subject", subject);
     BasicDBObject query = new BasicDBObject().append("account", account);
+    BasicDBObject object = new BasicDBObject();
+    object.append("$set", new BasicDBObject().append("address", address).append("birthday", birthday).append("sex", sex)
+        .append("subject", subject));
     try {
       ConfigDB.Database().update(query, object);
     } catch (UnknownHostException e) {
       e.printStackTrace();
     }
+  }
+
+  
+//get all information from database
+  public static Map<Integer,Map<String,String>> GetAllInfo(String account) {
+    String sexOption = "";
+    int key = 0;
+    Map<Integer,Map<String,String>> info = new HashMap<Integer, Map<String,String>>();
+    Map<String, String> acc;
+    List<String> list;
+    try {
+      DBCursor cursor = ConfigDB.Database().find();
+      DBObject object = null;
+      while(cursor.hasNext()){
+        object = cursor.next();
+        acc = new HashMap<String, String>();
+        System.out.println("value: "+object.toString());
+        acc.put("account", object.get("account").toString());
+        acc.put("address", object.get("address").toString());
+        acc.put("birthday", object.get("birthday").toString());
+        if ("on".equals(object.get("sex").toString())) {
+          sexOption = "Male";
+        } else {
+          sexOption = "Female";
+        }
+        acc.put("sex", sexOption);
+        acc.put("subject", object.get("subject").toString());
+        
+        info.put(key, acc);
+        key ++;        
+      }
+      System.out.println("Size is: "+info.size());
+    } catch (UnknownHostException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return info;
   }
 }
