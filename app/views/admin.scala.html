@@ -14,7 +14,8 @@
 			</div>
 		</nav>
 		<h2 class="text-center">The information of employees</h2>
-		<form role="form form-honizontal" method="post" action="edit">
+		<input class="size"  value = @info.size() hidden="true"></input>
+		<form role="form form-honizontal" method="post" action="" id="admin">
 			<div class="form-group">
 				<table class="table">
 					<thead>
@@ -24,17 +25,18 @@
 							<th>Age</th>
 							<th>Sex</th>
 							<th>Subject</th>
-							<th></th>
+							<th><input class="selectAll" type="checkbox">Select All</input></th>
 						</tr>
 					</thead>
 					<tbody>
-						@for(key<-info.keySet()){
-							<tr>
-								<td>@info.get(key).get("account")</td>
-								<td>@info.get(key).get("address")</td>
-								<td>@info.get(key).get("birthday")</td>
-								<td>@info.get(key).get("sex")</td>
-								<td>@info.get(key).get("subject")</td>
+						@for(key<-0 until info.size()){
+							<tr id=@key>
+								<td class="account">@info.get(key).get("account")</td>
+								<td class="address">@info.get(key).get("address")</td>
+								<td class="birthday">@info.get(key).get("birthday")</td>
+								<td class="sex">@info.get(key).get("sex")</td>
+								<td class="subject">@info.get(key).get("subject")</td>
+								<td id = @key><input class="select" type="checkbox"></input></td>
 							</tr>
 						}						
 					</tbody>
@@ -43,7 +45,7 @@
 			<div class="col-sm-4"></div>
 			<div class="form-group col-sm-4">
 				<div class="col-sm-6">
-					<input class="form-control btn-primary" type="submit" value="Edit Information">
+					<input class="form-control btn-primary" type="submit" value="Delete" id= "delete">
 				</div>
 			</div>
 			<div class="col-sm-4"></div>

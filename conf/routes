@@ -12,5 +12,6 @@ GET		/logout						controllers.Application.logout()
 POST	/edit						controllers.Application.edit()
 POST	/editdone				    controllers.Application.editdone()
 GET		/admin						controllers.Application.admin()
+POST	/deleteitem						controllers.Application.deleteitem()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

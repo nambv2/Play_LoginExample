@@ -90,4 +90,12 @@ public class Application extends Controller {
       LoginModels.saveNewInfor(account, address, birthday, sex, subject);
       return redirect(routes.Application.infor());
     }
+    
+    public static Result deleteitem(){
+      Map<String, String[]> params = request().body().asFormUrlEncoded();
+      String account[] = params.get("account[]");
+      LoginModels.delete(account);
+      System.out.println("Im here! done");
+      return redirect(routes.Application.admin());
+    }
 }

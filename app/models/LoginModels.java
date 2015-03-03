@@ -188,4 +188,20 @@ public class LoginModels {
     }
     return info;
   }
+  
+  //delete employee
+  public static void delete(String[] account){
+    BasicDBObject object = new BasicDBObject();
+    List<String> list = new ArrayList<String>();
+    for(int i=0;i<account.length;i++){
+      list.add(account[i]);
+    }
+    object.put("account", new BasicDBObject("$in",list));
+    try {
+      ConfigDB.Database().remove(object);
+    } catch (UnknownHostException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 }
